@@ -23,4 +23,10 @@ public class AuthController {
     authService.register(reqDto);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
+
+  @PostMapping("/login")
+  public ResponseEntity<LoginResDto> login(@Valid @RequestBody LoginReqDto reqDto) {
+    LoginResDto resDto = authService.login(reqDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(resDto);
+  }
 }
