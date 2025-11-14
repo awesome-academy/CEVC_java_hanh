@@ -1,4 +1,4 @@
-package com.example.public_service_management.department;
+package com.example.public_service_management.category;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import org.hibernate.annotations.SQLDelete;
 
 import com.example.public_service_management.common.entity.BaseEntity;
 import com.example.public_service_management.service_type.ServiceType;
-import com.example.public_service_management.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,8 +13,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -23,11 +20,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "departments")
-@SQLDelete(sql = "UPDATE departments SET deleted_at = UTC_TIMESTAMP(6) WHERE id = ?")
+@Table(name = "categories")
+@SQLDelete(sql = "UPDATE categories SET deleted_at = UTC_TIMESTAMP(6) WHERE id = ?")
 @Getter
 @Setter
-public class Department extends BaseEntity {
+public class Category extends BaseEntity {
   @Setter(AccessLevel.NONE)
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,25 +36,17 @@ public class Department extends BaseEntity {
   private String name;
 
   @Column(columnDefinition = "TEXT")
-  private String address;
+  private String description;
 
-  @ManyToOne
-  @JoinColumn(name = "leader_id")
-  private User leader;
-
-  @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
-  private List<User> users;
-
-  @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
   private List<ServiceType> serviceTypes;
 
-  public Department() {
+  public Category() {
   }
 
-  public Department(String code, String name, String address, User leader) {
+  public Category(String code, String name, String description) {
     this.code = code;
     this.name = name;
-    this.address = address;
-    this.leader = leader;
+    this.description = description;
   }
 }
