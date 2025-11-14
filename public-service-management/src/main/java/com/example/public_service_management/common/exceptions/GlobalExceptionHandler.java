@@ -33,6 +33,20 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(error, HttpStatus.CONFLICT);
   }
 
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<Map<String, String>> handleUnauthorizedException(UnauthorizedException ex) {
+    Map<String, String> error = new HashMap<>();
+    error.put("error", ex.getMessage());
+    return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(ForbiddenException.class)
+  public ResponseEntity<Map<String, String>> handleForbiddenException(ForbiddenException ex) {
+    Map<String, String> error = new HashMap<>();
+    error.put("error", ex.getMessage());
+    return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
     Map<String, String> errors = new HashMap<>();

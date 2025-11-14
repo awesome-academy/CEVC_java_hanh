@@ -10,7 +10,9 @@ import com.example.public_service_management.common.enums.Gender;
 import com.example.public_service_management.common.enums.Role;
 import com.example.public_service_management.common.enums.Status;
 import com.example.public_service_management.department.Department;
+import com.example.public_service_management.user_session.UserSession;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -78,6 +80,9 @@ public class User extends BaseEntity {
   @OneToMany(mappedBy = "leader")
   private List<Department> departments;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<UserSession> userSessions;
+
   public User() {
   }
 
@@ -98,5 +103,13 @@ public class User extends BaseEntity {
     this.eidIdentifier = eidIdentifier;
     this.status = status;
     this.emailNotificationEnabled = emailNotificationEnabled;
+  }
+
+  public boolean isLocked() {
+    return this.status == Status.locked;
+  }
+
+  public boolean isDeleted() {
+    return this.getDeletedAt() != null;
   }
 }
