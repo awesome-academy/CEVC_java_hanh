@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.public_service_management.common.utils.TokenUtil;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -15,9 +17,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/citizen/auth")
 public class AuthController {
   private final AuthService authService;
+  private final TokenUtil tokenUtil;
 
-  public AuthController(AuthService authService) {
+  public AuthController(AuthService authService, TokenUtil tokenUtil) {
     this.authService = authService;
+    this.tokenUtil = tokenUtil;
   }
 
   @PostMapping("/register")
@@ -34,7 +38,7 @@ public class AuthController {
 
   @DeleteMapping("/logout")
   public ResponseEntity<Void> logout(HttpServletRequest request) {
-    String accessToken = authService.getAccessToken(request);
+    String accessToken = tokenUtil.getAccessToken(request);
     authService.logout(accessToken);
     return ResponseEntity.noContent().build();
   }

@@ -21,7 +21,6 @@ import com.example.public_service_management.user_session.UserSessionRepository;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class AuthService {
@@ -104,14 +103,5 @@ public class AuthService {
     }
 
     userSessionRepository.hardDeleteBySessionId(sessionId);
-  }
-
-  public String getAccessToken(HttpServletRequest request) {
-    String accessToken = request.getHeader("X-Access-Token");
-    if (accessToken == null || accessToken.isBlank()) {
-      throw new UnauthorizedException(i18nUtil.get("error.missing_access_token_header"));
-    }
-
-    return accessToken;
   }
 }
