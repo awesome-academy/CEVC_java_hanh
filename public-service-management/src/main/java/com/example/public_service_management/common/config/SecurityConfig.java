@@ -20,6 +20,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/citizen/auth/register").permitAll()
             .requestMatchers("/api/citizen/auth/login").permitAll()
+            .requestMatchers("/api/citizen/auth/logout").permitAll()
             .anyRequest().authenticated());
 
     return http.build();
