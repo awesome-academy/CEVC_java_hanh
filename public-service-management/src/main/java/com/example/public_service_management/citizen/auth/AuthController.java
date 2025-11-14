@@ -2,11 +2,13 @@ package com.example.public_service_management.citizen.auth;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -28,5 +30,12 @@ public class AuthController {
   public ResponseEntity<LoginResDto> login(@Valid @RequestBody LoginReqDto reqDto) {
     LoginResDto resDto = authService.login(reqDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(resDto);
+  }
+
+  @DeleteMapping("/logout")
+  public ResponseEntity<Void> logout(HttpServletRequest request) {
+    String accessToken = authService.getAccessToken(request);
+    authService.logout(accessToken);
+    return ResponseEntity.noContent().build();
   }
 }

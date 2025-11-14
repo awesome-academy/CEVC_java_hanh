@@ -19,6 +19,10 @@ import com.example.public_service_management.user.UserRepository;
 import com.example.public_service_management.user_session.UserSession;
 import com.example.public_service_management.user_session.UserSessionRepository;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
+
 @Service
 public class AuthService {
   private final UserRepository userRepository;
@@ -87,5 +91,27 @@ public class AuthService {
     userSessionRepository.save(userSession);
 
     return new LoginResDto(accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn);
+  }
+
+  public void logout(String accessToken) {
+    String sessionId;
+    try {
+      sessionId = jwtTokenProvider.getSessionId(accessToken);
+    } catch (ExpiredJwtException e) {
+      sessionId = e.getClaims().getSubject();
+    } catch (JwtException e) {
+      throw new UnauthorizedException(i18nUtil.get("error.invalid_access_token"));
+    }
+
+    userSessionRepository.hardDeleteBySessionId(sessionId);
+  }
+
+  public String getAccessToken(HttpServletRequest request) {
+    String accessToken = request.getHeader("X-Access-Token");
+    if (accessToken == null || accessToken.isBlank()) {
+      throw new UnauthorizedException(i18nUtil.get("error.missing_access_token_header"));
+    }
+
+    return accessToken;
   }
 }
