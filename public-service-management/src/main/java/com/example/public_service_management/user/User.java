@@ -112,4 +112,8 @@ public class User extends BaseEntity {
   public boolean isDeleted() {
     return this.getDeletedAt() != null;
   }
+
+  public boolean isEnabled() {
+    return this.status == Status.active && this.getDeletedAt() == null;
+  }
 }
