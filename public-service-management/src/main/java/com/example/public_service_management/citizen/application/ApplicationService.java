@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.public_service_management.application.Application;
 import com.example.public_service_management.application.ApplicationRepository;
 import com.example.public_service_management.application_attachment.ApplicationAttachment;
+import com.example.public_service_management.application_attachment.ApplicationAttachmentRepository;
 import com.example.public_service_management.application_history.ApplicationHistory;
+import com.example.public_service_management.common.dto.PageResDto;
 import com.example.public_service_management.common.enums.ApplicationStatus;
 import com.example.public_service_management.common.enums.NotificationType;
 import com.example.public_service_management.common.exceptions.BadRequestException;
@@ -38,6 +42,7 @@ public class ApplicationService {
   private final ServiceTypeRepository serviceTypeRepository;
   private final StaffAssignmentRepository staffAssignmentRepository;
   private final UserRepository userRepository;
+  private final ApplicationAttachmentRepository attachmentRepository;
   private final NotificationService notificationService;
   private final I18nUtil i18nUtil;
   private final FileUtil fileUtil;
@@ -72,6 +77,30 @@ public class ApplicationService {
     notificationService.create(NotificationType.application_received, citizen, app);
 
     return modelMapper.map(app, CreateApplicationDetailsResDto.class);
+  }
+
+  public PageResDto<GetApplicationListResDto> getList(Long citizenId, Pageable pageable) {
+    Page<GetApplicationListResDto> apps = applicationRepository.findByCitizenId(citizenId, pageable)
+        .map(app -> modelMapper.map(app, GetApplicationListResDto.class));
+
+    return new PageResDto<GetApplicationListResDto>(apps);
+  }
+
+  public GetApplicationDetailsResDto getDetails(Long appId) {
+    Application app = findApplication(appId);
+
+    return modelMapper.map(app, GetApplicationDetailsResDto.class);
+  }
+
+  @Transactional
+  public void createAttachments(User citizen, Long appId, List<MultipartFile> attachments) {
+    Application app = findApplication(appId);
+
+    if ((app.getAttachments().size() + attachments.size()) > maxAttachments) {
+      throw new BadRequestException(i18nUtil.get("error.application_attachments.max", maxAttachments));
+    }
+
+    buildAttachments(attachments, app, citizen).forEach(attachmentRepository::save);
   }
 
   private ServiceType findServiceType(Long serviceTypeId) {
@@ -112,5 +141,10 @@ public class ApplicationService {
         .build();
 
     return List.of(history);
+  }
+
+  private Application findApplication(Long appId) {
+    return applicationRepository.findById(appId)
+        .orElseThrow(() -> new NotFoundException(i18nUtil.get("error.application.not_found", appId)));
   }
 }
