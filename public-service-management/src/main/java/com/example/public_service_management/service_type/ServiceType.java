@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
 
+import com.example.public_service_management.application.Application;
 import com.example.public_service_management.category.Category;
 import com.example.public_service_management.common.entity.BaseEntity;
 import com.example.public_service_management.department.Department;
 import com.example.public_service_management.service_required_document.ServiceRequiredDocument;
+import com.example.public_service_management.staff_assignment.StaffAssignment;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,6 +58,12 @@ public class ServiceType extends BaseEntity {
 
   @OneToMany(mappedBy = "serviceType", fetch = FetchType.LAZY)
   private List<ServiceRequiredDocument> serviceRequiredDocuments;
+
+  @OneToMany(mappedBy = "serviceType", fetch = FetchType.LAZY)
+  private List<Application> applications;
+
+  @OneToMany(mappedBy = "serviceType", fetch = FetchType.LAZY)
+  private List<StaffAssignment> staffAssignments;
 
   public ServiceType() {
   }
