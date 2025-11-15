@@ -5,11 +5,15 @@ import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
 
+import com.example.public_service_management.application.Application;
+import com.example.public_service_management.application_attachment.ApplicationAttachment;
+import com.example.public_service_management.application_history.ApplicationHistory;
 import com.example.public_service_management.common.entity.BaseEntity;
 import com.example.public_service_management.common.enums.Gender;
 import com.example.public_service_management.common.enums.Role;
-import com.example.public_service_management.common.enums.Status;
+import com.example.public_service_management.common.enums.UserStatus;
 import com.example.public_service_management.department.Department;
+import com.example.public_service_management.staff_assignment.StaffAssignment;
 import com.example.public_service_management.user_session.UserSession;
 
 import jakarta.persistence.CascadeType;
@@ -17,6 +21,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -72,23 +77,41 @@ public class User extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private Status status = Status.active;
+  private UserStatus status = UserStatus.active;
 
   @Column(nullable = false)
   private Boolean emailNotificationEnabled = true;
 
-  @OneToMany(mappedBy = "leader")
+  @OneToMany(mappedBy = "leader", fetch = FetchType.LAZY)
   private List<Department> departments;
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private List<UserSession> userSessions;
+
+  @OneToMany(mappedBy = "citizen", fetch = FetchType.LAZY)
+  private List<Application> citizenApplications;
+
+  @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY)
+  private List<Application> staffApplications;
+
+  @OneToMany(mappedBy = "uploadedBy", fetch = FetchType.LAZY)
+  private List<ApplicationAttachment> applicationAttachments;
+
+  @OneToMany(mappedBy = "updatedBy", fetch = FetchType.LAZY)
+  private List<ApplicationHistory> applicationHistories;
+
+  @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY)
+  private List<StaffAssignment> staffAssignments;
+
+  @OneToMany(mappedBy = "assignedBy", fetch = FetchType.LAZY)
+  private List<StaffAssignment> assignedStaffAssignments;
 
   public User() {
   }
 
   public User(String fullName, LocalDate dateOfBirth, Gender gender, String nationalId,
       String address, String phoneNumber, String email, String passwordDigest,
-      Role role, Department department, String eidIdentifier, Status status,
+      Role role, Department department, String eidIdentifier, UserStatus status,
       Boolean emailNotificationEnabled) {
     this.fullName = fullName;
     this.dateOfBirth = dateOfBirth;
@@ -106,14 +129,10 @@ public class User extends BaseEntity {
   }
 
   public boolean isLocked() {
-    return this.status == Status.locked;
-  }
-
-  public boolean isDeleted() {
-    return this.getDeletedAt() != null;
+    return this.status == UserStatus.locked;
   }
 
   public boolean isEnabled() {
-    return this.status == Status.active && this.getDeletedAt() == null;
+    return this.status == UserStatus.active && this.getDeletedAt() == null;
   }
 }
