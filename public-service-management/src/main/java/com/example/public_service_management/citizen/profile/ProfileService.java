@@ -22,7 +22,7 @@ public class ProfileService {
   }
 
   public void update(User user, UpdateProfileReqDto reqDto) {
-    if (userRepository.existsByEmail(reqDto.getEmail())) {
+    if (userRepository.existsByEmailAndIdNot(reqDto.getEmail(), user.getId())) {
       throw new ConflictException(i18nUtil.get("error.email.exists"));
     }
 
