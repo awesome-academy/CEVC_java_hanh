@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,5 +31,12 @@ public class ServiceTypeController {
     PageResDto<GetServiceTypeListResDto> serviceTypes = serviceTypeService.getList(categoryId, pageable);
 
     return ResponseEntity.ok(serviceTypes);
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<GetServiceTypeDetailsResDto> getDetails(@PathVariable Long id) {
+    GetServiceTypeDetailsResDto serviceTypeDetails = serviceTypeService.getDetails(id);
+
+    return ResponseEntity.ok(serviceTypeDetails);
   }
 }
