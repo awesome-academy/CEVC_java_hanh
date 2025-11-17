@@ -23,4 +23,8 @@ public class BaseEntity {
   private Instant updatedAt;
 
   private Instant deletedAt;
+
+  public boolean isDeleted() {
+    return this.deletedAt != null;
+  }
 }
