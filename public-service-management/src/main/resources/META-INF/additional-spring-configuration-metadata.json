@@ -19,6 +19,31 @@
       "name": "security.public-paths",
       "type": "java.lang.String",
       "description": "Comma-separated list of public API paths that do not require authentication"
+    },
+    {
+      "name": "file.upload-dir",
+      "type": "java.lang.String",
+      "description": "Directory path where uploaded files are stored"
+    },
+    {
+      "name": "file.max-size",
+      "type": "java.lang.String",
+      "description": "Maximum allowed size (in bytes) for uploaded files"
+    },
+    {
+      "name": "file.allowed-types",
+      "type": "java.lang.String",
+      "description": "Comma-separated list of allowed MIME types for uploaded files"
+    },
+    {
+      "name": "file.allowed-extensions",
+      "type": "java.lang.String",
+      "description": "Comma-separated list of allowed file extensions for uploaded files"
+    },
+    {
+      "name": "file.max-application-attachments",
+      "type": "java.lang.String",
+      "description": "Maximum number of attachments allowed per application"
     }
   ]
 }
