@@ -34,4 +34,6 @@ public class UpdateProfileReqDto {
   @OptionalNotBlank
   @Email(message = "{validation.email.format}")
   private String email;
+
+  private Boolean emailNotificationEnabled;
 }
