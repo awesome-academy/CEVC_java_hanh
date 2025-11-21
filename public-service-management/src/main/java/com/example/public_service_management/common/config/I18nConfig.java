@@ -1,17 +1,23 @@
 package com.example.public_service_management.common.config;
 
-import java.util.Locale;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
-public class I18nConfig {
+@AllArgsConstructor
+public class I18nConfig implements WebMvcConfigurer {
+  private LocalizedDateFormatter localizedDateFormatter;
+
   @Bean
   MessageSource messageSource() {
     ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -30,8 +36,23 @@ public class I18nConfig {
 
   @Bean
   LocaleResolver localeResolver() {
-    AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
-    resolver.setDefaultLocale(Locale.ENGLISH);
-    return resolver;
+    return new CustomLocaleResolver();
+  }
+
+  @Bean
+  public LocaleChangeInterceptor localeChangeInterceptor() {
+    LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
+    interceptor.setParamName("lang");
+    return interceptor;
+  }
+
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(localeChangeInterceptor());
+  }
+
+  @Override
+  public void addFormatters(FormatterRegistry registry) {
+    registry.addFormatter(localizedDateFormatter);
   }
 }

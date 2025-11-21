@@ -9,11 +9,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.public_service_management.citizen.auth.CitizenDetails;
-import com.example.public_service_management.citizen.auth.CitizenDetailsService;
 import com.example.public_service_management.common.exceptions.UnauthorizedException;
 import com.example.public_service_management.common.utils.I18nUtil;
 import com.example.public_service_management.common.utils.TokenUtil;
+import com.example.public_service_management.user.CustomUserDetails;
+import com.example.public_service_management.user_session.UserSession;
+import com.example.public_service_management.user_session.UserSessionRepository;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.annotation.PostConstruct;
@@ -27,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TokenAuthFilter extends OncePerRequestFilter {
   private final JwtTokenProvider jwtTokenProvider;
-  private final CitizenDetailsService citizenDetailsService;
+  private final UserSessionRepository userSessionRepository;
   private final TokenUtil tokenUtil;
   private final I18nUtil i18nUtil;
 
@@ -52,9 +53,11 @@ public class TokenAuthFilter extends OncePerRequestFilter {
     try {
       String accessToken = tokenUtil.getAccessToken(request);
       String sessionId = jwtTokenProvider.getSessionId(accessToken);
-      CitizenDetails citizenDetails = citizenDetailsService.loadUserByUsername(sessionId);
-      UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(citizenDetails, null,
-          citizenDetails.getAuthorities());
+      UserSession userSession = userSessionRepository.findBySessionId(sessionId)
+          .orElseThrow(() -> new UnauthorizedException(i18nUtil.get("error.invalid_access_token")));
+      CustomUserDetails userDetails = new CustomUserDetails(userSession.getUser());
+      UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null,
+          userDetails.getAuthorities());
 
       SecurityContextHolder.getContext().setAuthentication(auth);
 

@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.public_service_management.citizen.auth.CitizenDetails;
 import com.example.public_service_management.common.dto.PageReqDto;
 import com.example.public_service_management.common.dto.PageResDto;
 import com.example.public_service_management.common.utils.PageableUtil;
+import com.example.public_service_management.user.CustomUserDetails;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,11 +23,11 @@ public class NotificationController {
 
   @GetMapping
   public ResponseEntity<PageResDto<GetNotificationListDto>> getList(
-      @AuthenticationPrincipal CitizenDetails citizenDetails,
+      @AuthenticationPrincipal CustomUserDetails userDetails,
       @Validated @ModelAttribute PageReqDto pageReqDto) {
 
     PageResDto<GetNotificationListDto> notifications = notificationService.getList(
-        citizenDetails.getUser().getId(),
+        userDetails.getUser().getId(),
         PageableUtil.toPageable(pageReqDto));
 
     return ResponseEntity.ok(notifications);
