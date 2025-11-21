@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.user.edit.edit_user}">Edit User</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="w-50 mx-auto">
+      <h2 class="mb-4 text-center" th:text="#{admin.user.edit.edit_user}">Edit User</h2>
+
+      <form th:action="@{|/admin/users/${user.id}/edit|}" th:object="${user}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        <div class="mb-2 row align-items-center">
+          <label th:for="fullName" class="col-3 col-form-label fw-bold">
+            <span th:text="#{user.field.full_name}">Full Name</span>
+            <span class="text-danger">*</span></label>
+          <div class="col-9">
+            <input type="text" th:field="*{fullName}" class="form-control" th:placeholder="#{user.field.full_name}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="dateOfBirth" class="col-3 col-form-label fw-bold" th:text="#{user.field.date_of_birth}">Date of
+            Birth</label>
+          <div class="col-9">
+            <input type="text" th:field="*{dateOfBirth}" class="form-control" th:placeholder="#{date.format}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label for="gender" class="col-3 col-form-label fw-bold" th:text="#{user.field.gender}">Gender</label>
+          <div class="col-9">
+            <select id="gender" name="gender" class="form-select" th:field="*{gender}">
+              <option value="" th:text="#{admin.user.edit.select_gender}" th:selected="${user.gender == null}">Select
+                Gender</option>
+              <option th:each="g : ${genders}" th:value="${g}" th:text="#{|user.gender.${g}|}"
+                th:selected="${g == user.gender}"></option>
+            </select>
+            <div class="text-danger small" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="nationalId" class="col-3 col-form-label fw-bold">
+            <span th:text="#{user.field.national_id}">National ID</span>
+            <span class="text-danger">*</span>
+          </label>
+          <div class="col-9">
+            <input type="text" th:field="*{nationalId}" class="form-control" th:placeholder="#{user.field.national_id}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('nationalId')}" th:errors="*{nationalId}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="address" class="col-3 col-form-label fw-bold" th:text="#{user.field.address}">Address</label>
+          <div class="col-9">
+            <input type="text" th:field="*{address}" class="form-control" th:placeholder="#{user.field.address}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="phoneNumber" class="col-3 col-form-label fw-bold" th:text="#{user.field.phone_number}">Phone
+            Number</label>
+          <div class="col-9">
+            <input type="text" th:field="*{phoneNumber}" class="form-control"
+              th:placeholder="#{user.field.phone_number}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="email" class="col-3 col-form-label fw-bold">
+            <span th:text="#{user.field.email}">Email</span>
+            <span class="text-danger">*</span>
+          </label>
+          <div class="col-9">
+            <input type="email" th:field="*{email}" class="form-control" th:placeholder="#{user.field.email}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label class="col-3 col-form-label fw-bold">
+            <span th:text="#{user.field.role}">Role</span>
+            <span class="text-danger">*</span></label>
+          <div class="col-9">
+            <div th:each="r : ${roles}" class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" th:field="*{role}" th:value="${r}" th:id="${'role-' + r}">
+              <label class="form-check-label" th:for="${'role-' + r}" th:text="#{|user.role.${r}|}"></label>
+            </div>
+            <div class="text-danger small" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label for="department" class="col-3 col-form-label fw-bold"
+            th:text="#{user.field.department}">Department</label>
+          <div class="col-9">
+            <select id="department" name="department" class="form-select" th:field="*{department}">
+              <option value="" th:text="#{admin.user.edit.select_department}" th:selected="${user.department == null}">
+                Select Department</option>
+              <option th:each="d : ${departments}" th:value="${d.id}" th:text="${d.name}"
+                th:selected="${user.department != null and d.id == user.department.id}"></option>
+            </select>
+            <div class="text-danger small" th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="eidIdentifier" class="col-3 col-form-label fw-bold" th:text="#{user.field.eid_identifier}">EID
+            Identifier</label>
+          <div class="col-9">
+            <input type="text" th:field="*{eidIdentifier}" class="form-control"
+              th:placeholder="#{user.field.eid_identifier}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('eidIdentifier')}" th:errors="*{eidIdentifier}">
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4 row align-items-center">
+          <div class="col-3 col-form-label fw-bold">
+            <span th:text="#{user.field.email_notification}">Email Notification</span>
+            <span class="text-danger">*</span>
+          </div>
+          <div class="col-9">
+            <div class="form-check form-switch">
+              <input type="checkbox" th:field="*{emailNotificationEnabled}" class="form-check-input"
+                id="emailNotificationEnabled">
+            </div>
+            <div class="text-danger small" th:if="${#fields.hasErrors('emailNotificationEnabled')}"
+              th:errors="*{emailNotificationEnabled}"></div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2">
+          <button type="submit" class="btn btn-primary" th:text="#{action.save}">Save</button>
+          <a th:href="@{/admin/users}" class="btn btn-secondary" th:text="#{action.cancel}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+
+</html>

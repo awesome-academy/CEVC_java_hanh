@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.user.list.all_users}">All Users</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="container-fluid">
+      <h2 class="mb-4 text-center" th:text="#{admin.user.list.all_users}">All Users</h2>
+
+      <div class="mb-4 d-flex justify-content-between align-items-center">
+        <form method="get" class="d-flex gap-2 mb-0">
+          <select name="role" class="form-select">
+            <option value="" th:text="#{admin.user.list.all}" th:selected="${role == null}">All</option>
+            <option th:each="r : ${roles}" th:value="${r}" th:text="#{|user.role.${r}|}" th:selected="${r == role}">
+            </option>
+          </select>
+          <button type="submit" class="btn btn-primary" th:text="#{admin.user.list.filter}">Filter</button>
+        </form>
+
+        <a th:href="@{/admin/users/add}" class="btn btn-primary" th:text="#{admin.user.list.add_user}">Add User</a>
+      </div>
+
+      <table class="mb-4 table table-hover">
+        <thead>
+          <tr>
+            <th th:text="#{user.field.id}">ID</th>
+            <th th:text="#{user.field.full_name}">Full Name</th>
+            <th th:text="#{user.field.email}">Email</th>
+            <th th:text="#{user.field.role}">Role</th>
+            <th class="text-center" th:text="#{user.field.status}">Status</th>
+            <th colspan="4" class="text-center" th:text="#{admin.user.list.actions}">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="user : ${users}"
+            th:with="statusKey=${user.isDeleted()} ? 'deleted' : (${user.isLocked()} ? 'locked' : 'active')">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.fullName}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="#{|user.role.${user.role.name()}|}"></td>
+
+            <td class="text-center">
+              <span class="badge"
+                th:classappend="${statusKey == 'deleted'} ? 'bg-danger' : (${statusKey == 'locked'} ? 'bg-warning' : 'bg-success')"
+                th:text="#{|user.status.${statusKey}|}"></span>
+            </td>
+            <td class="text-center">
+              <a th:href="@{|/admin/users/${user.id}/details|}" class="text-decoration-none"
+                th:title="#{action.view_details}">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+            <td class="text-center">
+              <a th:if="${statusKey == 'active'}" th:href="@{|/admin/users/${user.id}/edit|}"
+                class="text-decoration-none" th:title="#{action.edit}">
+                <i class="bi bi-pencil"></i>
+              </a>
+            </td>
+            <td class="text-center">
+              <form th:if="${statusKey == 'active'}" th:action="@{|/admin/users/${user.id}/change-status|}"
+                method="post" th:id="@{|changeStatusForm-${user.id}|}">
+                <input type="hidden" name="status" value="locked" />
+
+                <button type="button" class="btn btn-link p-0" th:title="#{admin.user.list.lock}"
+                  th:data-msg="#{admin.user.list.lock_user_confirm}" onclick="confirmChangeStatus(this)"
+                  th:data-user-id="${user.id}">
+                  <i class="bi bi-lock"></i>
+                </button>
+              </form>
+
+              <form th:if="${statusKey == 'locked'}" th:action="@{|/admin/users/${user.id}/change-status|}"
+                method="post" th:id="@{|changeStatusForm-${user.id}|}">
+                <input type="hidden" name="status" value="active" />
+
+                <button type="button" class="btn btn-link p-0" th:title="#{admin.user.list.unlock}"
+                  th:data-msg="#{admin.user.list.unlock_user_confirm}" onclick="confirmChangeStatus(this)"
+                  th:data-user-id="${user.id}">
+                  <i class="bi bi-unlock"></i>
+                </button>
+              </form>
+            </td>
+            <td class="text-center">
+              <form th:if="${statusKey != 'deleted'}" th:action="@{|/admin/users/${user.id}|}" method="post"
+                th:id="@{|deleteForm-${user.id}|}">
+                <input type="hidden" name="_method" value="delete" />
+
+                <button type="button" class="btn btn-link p-0" th:title="#{action.delete}"
+                  th:data-msg="#{admin.user.list.delete_user_confirm}" onclick="confirmDelete(this)"
+                  th:data-user-id="${user.id}">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <nav th:if="${totalPages > 1}">
+        <ul class="pagination">
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+            <a class="page-link" th:href="@{|/admin/users?page=${currentPage - 1}&role=${role}|}"
+              th:text="#{pagination.previous}">Previous</a>
+          </li>
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+            th:classappend="${i == currentPage} ? 'active' : ''">
+            <a class="page-link" th:href="@{|/admin/users?page=${i}&role=${role}|}" th:text="${i + 1}"></a>
+          </li>
+          <li class="page-item" th:classappend="${currentPage == totalPages -1} ? 'disabled' : ''">
+            <a class="page-link" th:href="@{|/admin/users?page=${currentPage + 1}&role=${role}|}"
+              th:text="#{pagination.next}">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </main>
+
+  <div layout:fragment="scripts">
+    <script th:src="@{/js/admin/user/list.js}"></script>
+  </div>
+</body>
+
+</html>

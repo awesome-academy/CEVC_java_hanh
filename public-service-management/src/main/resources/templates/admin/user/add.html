@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.user.add.add_user}">Add User</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="w-50 mx-auto">
+      <h2 class="mb-4 text-center" th:text="#{admin.user.add.add_user}">Add User</h2>
+
+      <form th:action="@{/admin/users/add}" th:object="${user}" method="post">
+        <div class="mb-2 row align-items-center">
+          <label th:for="fullName" class="col-3 col-form-label fw-bold">
+            <span th:text="#{user.field.full_name}">Full Name</span>
+            <span class="text-danger">*</span></label>
+          <div class="col-9">
+            <input type="text" th:field="*{fullName}" class="form-control" th:placeholder="#{user.field.full_name}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="address" class="col-3 col-form-label fw-bold" th:text="#{user.field.address}">Address</label>
+          <div class="col-9">
+            <input type="text" th:field="*{address}" class="form-control" th:placeholder="#{user.field.address}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="phoneNumber" class="col-3 col-form-label fw-bold" th:text="#{user.field.phone_number}">Phone
+            Number</label>
+          <div class="col-9">
+            <input type="text" th:field="*{phoneNumber}" class="form-control"
+              th:placeholder="#{user.field.phone_number}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="email" class="col-3 col-form-label fw-bold">
+            <span th:text="#{user.field.email}">Email</span>
+            <span class="text-danger">*</span>
+          </label>
+          <div class="col-9">
+            <input type="email" th:field="*{email}" class="form-control" th:placeholder="#{user.field.email}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+          </div>
+        </div>
+
+        <div class="mb-4 row align-items-center">
+          <label class="col-3 col-form-label fw-bold">
+            <span th:text="#{user.field.role}">Role</span>
+            <span class="text-danger">*</span></label>
+          <div class="col-9">
+            <div th:each="r : ${roles}" class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" th:field="*{role}" th:value="${r}" th:id="${'role-' + r}">
+              <label class="form-check-label" th:for="${'role-' + r}" th:text="#{|user.role.${r}|}"></label>
+            </div>
+            <div class="text-danger small" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2">
+          <button type="submit" class="btn btn-primary" th:text="#{action.save}">Save</button>
+          <a th:href="@{/admin/users}" class="btn btn-secondary" th:text="#{action.cancel}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+
+</html>

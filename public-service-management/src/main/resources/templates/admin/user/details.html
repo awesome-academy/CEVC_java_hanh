@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.user.details.user_details}">User Details</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="w-50 mx-auto">
+      <h2 class="mb-4 text-center" th:text="#{admin.user.details.user_details}">User Details</h2>
+
+      <table class="mb-4 table table-hover">
+        <tr>
+          <th class="col-3" th:text="#{user.field.id}">ID</th>
+          <td class="col-9" th:text="${user.id}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.full_name}">Full Name</th>
+          <td class="col-9" th:text="${user.fullName}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.date_of_birth}">Date of Birth</th>
+          <td class="col-9"
+            th:text="${user.dateOfBirth != null ? #temporals.format(user.dateOfBirth, #messages.msg('date.format')) : ''}">
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.gender}">Gender</th>
+          <td class="col-9" th:text="${user.gender}"></td>
+        </tr>
+
+        <tr>
+          <th class="col-3" th:text="#{user.field.national_id}">National ID</th>
+          <td class="col-9" th:text="${user.nationalId}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.address}">Address</th>
+          <td class="col-9" th:text="${user.address}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.phone_number}">Phone Number</th>
+          <td class="col-9" th:text="${user.phoneNumber}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.email}">Email</th>
+          <td class="col-9" th:text="${user.email}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.role}">Role</th>
+          <td class="col-9" th:text="#{|user.role.${user.role.name()}|}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.department}">Department</th>
+          <td class="col-9">
+            <a th:if="${user.department != null}" th:href="@{|/admin/departments/${user.department.id}/show|}"
+              th:text="${user.department.name}"></a>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.eid_identifier}">EID Identifier</th>
+          <td class="col-9" th:text="${user.eidIdentifier}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.status}">Status</th>
+          <td class="col-9"
+            th:with="statusKey=${user.isDeleted()} ? 'deleted' : (${user.isLocked()} ? 'locked' : 'active')">
+            <span class="badge"
+              th:classappend="${statusKey == 'deleted'} ? 'bg-danger' : (${statusKey == 'locked'} ? 'bg-warning' : 'bg-success')"
+              th:text="#{|user.status.${statusKey}|}"></span>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{user.field.email_notification}">Email Notification</th>
+          <td class="col-9">
+            <div class="form-check form-switch">
+              <input type="checkbox" th:field="${user.emailNotificationEnabled}" class="form-check-input">
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <div class="d-flex justify-content-center gap-2">
+        <a th:href="@{/admin/users}" class="btn btn-secondary" th:text="#{action.back_to_list}">Back to
+          List</a>
+        <a th:href="@{|/admin/users/${user.id}/edit|}" class="btn btn-primary" th:text="#{action.edit}">Edit</a>
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>
