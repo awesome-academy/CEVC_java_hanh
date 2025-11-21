@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.public_service_management.citizen.auth.CitizenDetails;
+import com.example.public_service_management.user.CustomUserDetails;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +20,16 @@ public class ProfileController {
   private final ProfileService profileService;
 
   @GetMapping
-  public ResponseEntity<GetProfileDetailsResDto> getDetails(@AuthenticationPrincipal CitizenDetails citizenDetails) {
-    GetProfileDetailsResDto profileDetails = profileService.getDetails(citizenDetails.getUser());
+  public ResponseEntity<GetProfileDetailsResDto> getDetails(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    GetProfileDetailsResDto profileDetails = profileService.getDetails(userDetails.getUser());
 
     return ResponseEntity.ok().body(profileDetails);
   }
 
   @PutMapping
-  public ResponseEntity<Void> update(@AuthenticationPrincipal CitizenDetails citizenDetails,
+  public ResponseEntity<Void> update(@AuthenticationPrincipal CustomUserDetails userDetails,
       @Valid @RequestBody UpdateProfileReqDto reqDto) {
-    profileService.update(citizenDetails.getUser(), reqDto);
+    profileService.update(userDetails.getUser(), reqDto);
 
     return ResponseEntity.ok().build();
   }
