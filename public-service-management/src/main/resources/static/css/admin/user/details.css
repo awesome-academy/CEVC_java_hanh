@@ -1,0 +1,29 @@
+.bs-switch {
+  width: 2.5em;
+  height: 1.4em;
+  background-color: rgba(0, 0, 0, .25);
+  border-radius: 2em;
+  position: relative;
+  transition: background-color .15s ease-in-out;
+}
+
+.bs-switch::after {
+  content: "";
+  position: absolute;
+  top: 0.15em;
+  left: 0.15em;
+  width: 1.1em;
+  height: 1.1em;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform .15s ease-in-out;
+  box-shadow: 0 .1rem .25rem rgba(0, 0, 0, .1);
+}
+
+.bs-switch.on {
+  background-color: #0d6efd;
+}
+
+.bs-switch.on::after {
+  transform: translateX(1.1em);
+}
