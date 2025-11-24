@@ -1,4 +1,4 @@
-package com.example.public_service_management.citizen.auth;
+package com.example.public_service_management.user;
 
 import java.util.Collection;
 import java.util.List;
@@ -7,15 +7,17 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.public_service_management.user.User;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class CitizenDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails {
   private final User user;
+
+  public String getFullName() {
+    return user.getFullName();
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

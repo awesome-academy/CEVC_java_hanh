@@ -1,0 +1,7 @@
+security:
+  rules:
+    - pattern: /admin/login
+
+    - pattern: /admin/dashboard
+      method: GET # matches any if not set
+      roles: [STAFF, MANAGER, SUPER_ADMIN] # permit all if not set
