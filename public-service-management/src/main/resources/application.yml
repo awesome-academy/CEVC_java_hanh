@@ -8,3 +8,6 @@ security:
 
     - pattern: /admin/users/**
       roles: [SUPER_ADMIN]
+
+    - pattern: /admin/service-types/**
+      roles: [SUPER_ADMIN]

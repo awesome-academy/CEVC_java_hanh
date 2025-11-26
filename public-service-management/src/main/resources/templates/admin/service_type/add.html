@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.service_type.add.add_service_type}">Add Service Type</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="w-50 mx-auto">
+      <h2 class="mb-4 text-center" th:text="#{admin.service_type.add.add_service_type}">Add Service Type</h2>
+
+      <form th:action="@{/admin/service-types/add}" th:object="${serviceType}" method="post">
+        <div class="mb-2 row align-items-center">
+          <label th:for="name" class="col-3 col-form-label fw-bold">
+            <span th:text="#{service_type.field.name}">Name</span>
+            <span class="text-danger">*</span>
+          </label>
+          <div class="col-9">
+            <input type="text" th:field="*{name}" class="form-control" th:placeholder="#{service_type.field.name}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="description" class="col-3 col-form-label fw-bold"
+            th:text="#{service_type.field.description}">Description</label>
+          <div class="col-9">
+            <input type="text" th:field="*{description}" class="form-control"
+              th:placeholder="#{service_type.field.description}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="processingTime" class="col-3 col-form-label fw-bold">
+            <span th:text="#{service_type.field.processing_time}">Processing Time (days)</span>
+            <span class="text-danger">*</span>
+          </label>
+          <div class="col-9">
+            <input type="number" th:field="*{processingTime}" class="form-control"
+              th:placeholder="#{service_type.field.processing_time}" step="1">
+            <div class="text-danger small" th:if="${#fields.hasErrors('processingTime')}" th:errors="*{processingTime}">
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="fee" class="col-3 col-form-label fw-bold">
+            <span th:text="#{service_type.field.fee}">Fee (VND)</span>
+            <span class="text-danger">*</span>
+          </label>
+          <div class="col-9">
+            <input type="number" th:field="*{fee}" class="form-control" th:placeholder="#{service_type.field.fee}"
+              step="0.01">
+            <div class="text-danger small" th:if="${#fields.hasErrors('fee')}" th:errors="*{fee}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label class="col-3 col-form-label fw-bold">
+            <span th:text="#{service_type.field.department}">Department</span>
+            <span class="text-danger">*</span></label>
+          <div class="col-9">
+            <select id="department" name="department" class="form-select" th:field="*{department}">
+              <option value="" th:text="#{admin.service_type.add.select_department}"
+                th:selected="${serviceType.department == null}">
+                Select Department</option>
+              <option th:each="d : ${departments}" th:value="${d.id}" th:text="${d.name}"
+                th:selected="${serviceType.department != null and d.id == serviceType.department.id}"></option>
+            </select>
+            <div class="text-danger small" th:if="${#fields.hasErrors('department')}" th:errors="*{department}"></div>
+          </div>
+        </div>
+
+        <div class="mb-4 row align-items-center">
+          <label class="col-3 col-form-label fw-bold">
+            <span th:text="#{service_type.field.category}">Category</span>
+            <span class="text-danger">*</span></label>
+          <div class="col-9">
+            <select id="category" name="category" class="form-select" th:field="*{category}">
+              <option value="" th:text="#{admin.service_type.add.select_category}"
+                th:selected="${serviceType.category == null}">
+                Select Category</option>
+              <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                th:selected="${serviceType.category != null and c.id == serviceType.category.id}"></option>
+            </select>
+            <div class="text-danger small" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2">
+          <button type="submit" class="btn btn-primary" th:text="#{action.save}">Save</button>
+          <a th:href="@{/admin/service-types}" class="btn btn-secondary" th:text="#{action.cancel}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+
+</html>
