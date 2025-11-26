@@ -20,7 +20,7 @@ public class AdminDetailsService implements UserDetailsService {
   @Override
   public CustomUserDetails loadUserByUsername(String email) throws NotFoundException {
     User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> new NotFoundException(i18nUtil.get("error.user.not_found")));
+        .orElseThrow(() -> new NotFoundException(i18nUtil.get("error.user.with_email_not_found")));
 
     return new CustomUserDetails(user);
   }
