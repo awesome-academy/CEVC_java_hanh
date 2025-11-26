@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.department.add.add_department}">Add Department</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="w-50 mx-auto">
+      <h2 class="mb-4 text-center" th:text="#{admin.department.add.add_department}">Add Department</h2>
+
+      <form th:action="@{/admin/departments/add}" th:object="${department}" method="post">
+        <div class="mb-2 row align-items-center">
+          <label th:for="name" class="col-3 col-form-label fw-bold">
+            <span th:text="#{department.field.name}">Name</span>
+            <span class="text-danger">*</span></label>
+          <div class="col-9">
+            <input type="text" th:field="*{name}" class="form-control" th:placeholder="#{department.field.name}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="address" class="col-3 col-form-label fw-bold"
+            th:text="#{department.field.address}">Address</label>
+          <div class="col-9">
+            <input type="text" th:field="*{address}" class="form-control" th:placeholder="#{department.field.address}">
+            <div class="text-danger small" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+          </div>
+        </div>
+
+        <div class="mb-4 row align-items-center">
+          <label for="leader" class="col-3 col-form-label fw-bold" th:text="#{department.field.leader}">Leader</label>
+          <div class="col-9">
+            <select class="form-select" th:field="*{leader}">
+              <option value="" th:text="#{admin.department.add.select_leader}"
+                th:selected="${department.leader == null}">
+                Select Leader</option>
+              <option th:each="l : ${leaders}" th:value="${l.id}" th:text="${l.fullName}"
+                th:selected="${department.leader != null and l.id == department.leader.id}"></option>
+            </select>
+            <div class="text-danger small" th:if="${#fields.hasErrors('leader')}" th:errors="*{leader}"></div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2">
+          <button type="submit" class="btn btn-primary" th:text="#{action.save}">Save</button>
+          <a th:href="@{/admin/departments}" class="btn btn-secondary" th:text="#{action.cancel}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+
+</html>

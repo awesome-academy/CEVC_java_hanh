@@ -54,6 +54,20 @@
           </ul>
         </li>
 
+        <li sec:authorize="hasRole('SUPER_ADMIN')">
+          <a href="#departmentsSubmenu" data-bs-toggle="collapse" aria-expanded="false"
+            class="d-flex align-items-center px-3 py-2 dropdown-toggle">
+            <i class="bi bi-grid me-2"></i>
+            <span th:text="#{admin.layout.departments}">Departments</span>
+          </a>
+          <ul class="collapse list-unstyled ps-4" id="departmentsSubmenu">
+            <li><a th:href="@{/admin/departments}" class="d-block py-1" th:text="#{admin.layout.all_departments}">All
+                Departments</a></li>
+            <li><a th:href="@{/admin/departments/add}" class="d-block py-1" th:text="#{admin.layout.add_department}">Add
+                Department</a></li>
+          </ul>
+        </li>
+
         <li>
           <a th:href="@{/admin/applications}" class="d-flex align-items-center px-3 py-2">
             <i class="bi bi-files me-2"></i>

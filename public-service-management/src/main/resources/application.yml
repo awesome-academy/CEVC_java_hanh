@@ -14,3 +14,6 @@ security:
 
     - pattern: /admin/applications/**
       roles: [STAFF, MANAGER, SUPER_ADMIN]
+
+    - pattern: /admin/departments/**
+      roles: [SUPER_ADMIN]

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.department.details.department_details}">Department Details</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="w-50 mx-auto">
+      <h2 class="mb-4 text-center" th:text="#{admin.department.details.department_details}">Department Details</h2>
+
+      <table class="mb-4 table table-hover">
+        <tr>
+          <th class="col-3" th:text="#{department.field.id}">ID</th>
+          <td class="col-9" th:text="${department.id}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{department.field.code}">Code</th>
+          <td class="col-9" th:text="${department.code}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{department.field.name}">Name</th>
+          <td class="col-9" th:text="${department.name}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{department.field.address}">Address</th>
+          <td class="col-9" th:text="${department.address}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{department.field.leader}">Leader</th>
+          <td class="col-9">
+            <a th:if="${department.leader != null}" th:href="@{|/admin/users/${department.leader.id}/details|}"
+              th:text="${department.leader.fullName}"></a>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{department.field.status}">Status</th>
+          <td class="col-9">
+            <span class="badge" th:classappend="${department.statusKey == 'deleted'} ? 'bg-danger' : 'bg-success'"
+              th:text="#{|department.status.${department.statusKey}|}"></span>
+          </td>
+        </tr>
+      </table>
+
+      <div class="d-flex justify-content-center gap-2">
+        <a th:href="@{/admin/departments}" class="btn btn-secondary" th:text="#{action.back_to_list}">Back to List</a>
+
+        <a th:if="${department.statusKey == 'active'}" th:href="@{|/admin/departments/${department.id}/edit|}"
+          class="btn btn-primary" th:text="#{action.edit}">Edit</a>
+
+        <form th:if="${department.statusKey != 'deleted'}" th:action="@{|/admin/departments/${department.id}|}"
+          method="post" th:id="@{|deleteForm-${department.id}|}">
+          <input type="hidden" name="_method" value="delete" />
+
+          <button type="button" class="btn btn-danger" th:data-msg="#{admin.department.delete_confirm}"
+            th:data-department-id="${department.id}" onclick="confirmDelete(this)"
+            th:text="#{action.delete}">Delete</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <div layout:fragment="scripts">
+    <script th:src="@{/js/admin/department/common.js}"></script>
+  </div>
+</body>
+
+</html>
