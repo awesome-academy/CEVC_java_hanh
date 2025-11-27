@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.application.list.all_applications}">All Applications</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="container-fluid">
+      <h2 class="mb-4 text-center" th:text="#{admin.application.list.all_applications}">All Applications</h2>
+
+      <div class="mb-4 d-flex justify-content-between align-items-center">
+        <form method="get" class="d-flex gap-2 mb-0">
+          <select name="status" class="form-select">
+            <option value="" th:text="#{admin.application.list.all_statuses}" th:selected="${status == null}">All
+              Statuses</option>
+            <option th:each="st : ${statuses}" th:value="${st.name}" th:text="#{|application.status.${st.name}|}"
+              th:selected="${st.name == status}"></option>
+          </select>
+
+          <select name="serviceType" class="form-select">
+            <option value="" th:text="#{admin.application.list.all_service_type}" th:selected="${serviceType == null}">
+              All Service Types</option>
+            <option th:each="st : ${serviceTypes}" th:value="${st.id}" th:text="${st.name}"
+              th:selected="${st.id == serviceType?.id}"></option>
+          </select>
+
+          <select name="citizen" class="form-select">
+            <option value="" th:text="#{admin.application.list.all_citizens}" th:selected="${citizen == null}">All
+              Citizens</option>
+            <option th:each="c : ${citizens}" th:value="${c.id}" th:text="${c.fullName}"
+              th:selected="${c.id == citizen?.id}"></option>
+          </select>
+
+          <button type="submit" class="btn btn-primary" th:text="#{admin.application.list.filter}">Filter</button>
+        </form>
+      </div>
+
+      <table class="mb-4 table table-hover">
+        <thead>
+          <tr>
+            <th th:text="#{application.field.id}">ID</th>
+            <th th:text="#{application.field.code}">Code</th>
+            <th th:text="#{application.field.citizen}">Citizen</th>
+            <th th:text="#{application.field.service_type}">Service Type</th>
+            <th class="text-center" th:text="#{application.field.status}">Status</th>
+            <th colspan="2" class="text-center" th:text="#{admin.application.list.actions}">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="app : ${applications}">
+            <td th:text="${app.id}"></td>
+            <td th:text="${app.code}"></td>
+            <td th:text="${app.citizen.fullName}"></td>
+            <td th:text="${app.serviceType.name}"></td>
+
+            <td class="text-center">
+              <span class="badge"
+                th:classappend="${app.statusName == 'rejected'} ? 'bg-danger' : (${app.statusName == 'approved'} ? 'bg-success' : 'bg-primary')"
+                th:text="#{|application.status.${app.statusName}|}"></span>
+            </td>
+
+            <td class="text-center">
+              <a th:href="@{|/admin/applications/${app.id}/details|}" class="text-decoration-none"
+                th:title="#{action.view_details}">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+
+            <td class="text-center">
+              <a th:if="${app.statusName == 'received' || app.statusName == 'processing'}"
+                th:href="@{|/admin/applications/${app.id}/edit|}" class="text-decoration-none"
+                th:title="#{action.edit}">
+                <i class="bi bi-pencil"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <nav th:if="${totalPages > 1}">
+        <ul class="pagination">
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+            <a class="page-link"
+              th:href="@{/admin/applications(page=${currentPage - 1}, serviceType=${serviceType?.id}, citizen=${citizen?.id}, status=${status})}"
+              th:text="#{pagination.previous}">Previous</a>
+          </li>
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+            th:classappend="${i == currentPage} ? 'active' : ''">
+            <a class="page-link"
+              th:href="@{/admin/applications(page=${i}, serviceType=${serviceType?.id}, citizen=${citizen?.id}, status=${status})}"
+              th:text="${i + 1}"></a>
+          </li>
+          <li class="page-item" th:classappend="${currentPage == totalPages -1} ? 'disabled' : ''">
+            <a class="page-link"
+              th:href="@{/admin/applications(page=${currentPage + 1}, serviceType=${serviceType?.id}, citizen=${citizen?.id}, status=${status})}"
+              th:text="#{pagination.next}">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </main>
+</body>
+
+</html>

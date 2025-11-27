@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.application.details.application_details}">Application Details</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="w-50 mx-auto">
+      <h2 class="mb-4 text-center" th:text="#{admin.application.details.application_details}">Application Details</h2>
+
+      <table class="mb-4 table table-hover">
+        <tr>
+          <th class="col-3" th:text="#{application.field.id}">ID</th>
+          <td class="col-9" th:text="${app.id}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{application.field.code}">Code</th>
+          <td class="col-9" th:text="${app.code}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{application.field.submitted_at}">Submitted At</th>
+          <td class="col-9"
+            th:text="${app.submittedAt != null ? #temporals.format(app.submittedAt, #messages.msg('datetime.format')) : ''}">
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{application.field.completed_at}">Completed At</th>
+          <td class="col-9"
+            th:text="${app.completedAt != null ? #temporals.format(app.completedAt, #messages.msg('datetime.format')) : ''}">
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{application.field.citizen}">Citizen</th>
+          <td class="col-9">
+            <a th:if="${app.citizen != null}" th:href="@{|/admin/users/${app.citizen.id}/details|}"
+              th:text="${app.citizen.fullName}"></a>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{application.field.staff}">Staff</th>
+          <td class="col-9">
+            <a th:if="${app.staff != null}" th:href="@{|/admin/users/${app.staff.id}/details|}"
+              th:text="${app.staff.fullName}"></a>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{application.field.service_type}">Service Type</th>
+          <td class="col-9">
+            <a th:if="${app.serviceType != null}" th:href="@{|/admin/service-types/${app.serviceType.id}/details|}"
+              th:text="${app.serviceType.name}"></a>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{application.field.status}">Status</th>
+          <td class="col-9">
+            <span class="badge"
+              th:classappend="${app.statusName == 'rejected'} ? 'bg-danger' : (${app.statusName == 'approved'} ? 'bg-success' : 'bg-primary')"
+              th:text="#{|application.status.${app.statusName}|}"></span>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{application.field.attachments}">Attachments</th>
+          <td class="col-9">
+            <div th:each="attachment : ${app.attachments}">
+              <a th:href="${attachment.fileUrl}" th:text="${attachment.fileName}"></a>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{application.field.histories}">Histories</th>
+          <td class="col-9">
+            <div th:each="history : ${app.histories}" class="mb-2 p-2 border rounded small">
+              <div th:if="${history.status != null}">
+                <strong th:text="#{admin.application.details.status}">Status</strong>
+                <span class="badge"
+                  th:classappend="${history.statusName == 'rejected'} ? 'bg-danger' : (${history.statusName == 'approved'} ? 'bg-success' : 'bg-primary')"
+                  th:text="#{|application.status.${history.statusName}|}">
+                </span>
+              </div>
+
+              <div th:if="${history.attachmentUrl != null}">
+                <strong th:text="#{admin.application.details.response_file}">Response file</strong>
+                <a th:href="${history.attachmentUrl}" th:text="${history.attachmentUrl}"></a>
+              </div>
+
+              <div th:if="${history.note != null}">
+                <strong th:text="#{admin.application.details.note}">Note</strong>
+                <span th:text="${history.note}"></span>
+              </div>
+
+              <div th:if="${history.updatedBy != null}">
+                <strong th:text="#{admin.application.details.changed_by}">Changed by</strong>
+                <a th:href="@{|/admin/users/${history.updatedBy.id}/details|}"
+                  th:text="${history.updatedBy.fullName}"></a>
+              </div>
+
+              <div th:if="${history.createdAt != null}">
+                <strong th:text="#{|admin.application.details.changed_at|}">Changed at</strong>
+                <span th:text="${#temporals.format(history.createdAt, #messages.msg('datetime.format'))}">
+                </span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <div class="d-flex justify-content-center gap-2">
+        <a th:href="@{/admin/applications}" class="btn btn-secondary" th:text="#{action.back_to_list}">Back to List</a>
+
+        <a th:if="${app.statusName == 'received' || app.statusName == 'processing'}"
+          th:href="@{|/admin/applications/${app.id}/edit|}" class="btn btn-primary" th:text="#{action.edit}">Edit</a>
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>

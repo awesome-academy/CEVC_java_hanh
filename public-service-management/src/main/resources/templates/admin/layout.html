@@ -25,7 +25,7 @@
           </a>
         </li>
 
-        <li>
+        <li sec:authorize="hasRole('SUPER_ADMIN')">
           <a href="#usersSubmenu" data-bs-toggle="collapse" aria-expanded="false"
             class="d-flex align-items-center px-3 py-2 dropdown-toggle">
             <i class="bi bi-people me-2"></i>
@@ -38,17 +38,19 @@
           </ul>
         </li>
 
-        <li>
+        <li sec:authorize="hasRole('SUPER_ADMIN')">
           <a href="#servicesSubmenu" data-bs-toggle="collapse" aria-expanded="false"
             class="d-flex align-items-center px-3 py-2 dropdown-toggle">
             <i class="bi bi-grid me-2"></i>
-            <span th:text="#{admin.layout.services}">Services</span>
+            <span th:text="#{admin.layout.service_types}">Service Types</span>
           </a>
           <ul class="collapse list-unstyled ps-4" id="servicesSubmenu">
-            <li><a th:href="@{/admin/services}" class="d-block py-1" th:text="#{admin.layout.all_services}">All
-                Services</a></li>
-            <li><a th:href="@{/admin/services/create}" class="d-block py-1" th:text="#{admin.layout.add_service}">Add
-                Service</a></li>
+            <li><a th:href="@{/admin/service-types}" class="d-block py-1"
+                th:text="#{admin.layout.all_service_types}">All
+                Service Types</a></li>
+            <li><a th:href="@{/admin/service-types/add}" class="d-block py-1"
+                th:text="#{admin.layout.add_service_type}">Add
+                Service Type</a></li>
           </ul>
         </li>
 
@@ -56,13 +58,6 @@
           <a th:href="@{/admin/applications}" class="d-flex align-items-center px-3 py-2">
             <i class="bi bi-files me-2"></i>
             <span th:text="#{admin.layout.applications}">Applications</span>
-          </a>
-        </li>
-
-        <li>
-          <a th:href="@{/admin/settings}" class="d-flex align-items-center px-3 py-2">
-            <i class="bi bi-gear me-2"></i>
-            <span th:text="#{admin.layout.settings}">Settings</span>
           </a>
         </li>
       </ul>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.service_type.details.service_type_details}">Service Type Details</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="w-50 mx-auto">
+      <h2 class="mb-4 text-center" th:text="#{admin.service_type.details.service_type_details}">Service Type Details</h2>
+
+      <table class="mb-4 table table-hover">
+        <tr>
+          <th class="col-3" th:text="#{service_type.field.id}">ID</th>
+          <td class="col-9" th:text="${serviceType.id}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{service_type.field.code}">Code</th>
+          <td class="col-9" th:text="${serviceType.code}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{service_type.field.name}">Name</th>
+          <td class="col-9" th:text="${serviceType.name}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{service_type.field.description}">Description</th>
+          <td class="col-9" th:text="${serviceType.description}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{service_type.field.processing_time}">Processing Time (days)</th>
+          <td class="col-9" th:text="${serviceType.processingTime}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{service_type.field.fee}">Fee (VND)</th>
+          <td class="col-9" th:text="${serviceType.fee}"></td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{service_type.field.department}">Department</th>
+          <td class="col-9">
+            <a th:if="${serviceType.department != null}"
+              th:href="@{|/admin/departments/${serviceType.department.id}/details|}"
+              th:text="${serviceType.department.name}"></a>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{service_type.field.category}">Category</th>
+          <td class="col-9">
+            <a th:if="${serviceType.category != null}"
+              th:href="@{|/admin/categories/${serviceType.category.id}/details|}"
+              th:text="${serviceType.category.name}"></a>
+          </td>
+        </tr>
+        <tr>
+          <th class="col-3" th:text="#{service_type.field.status}">Status</th>
+          <td class="col-9">
+            <span class="badge"
+              th:classappend="${serviceType.statusKey == 'deleted'} ? 'bg-danger' : 'bg-success'"
+              th:text="#{|service_type.status.${serviceType.statusKey}|}"></span>
+          </td>
+        </tr>
+      </table>
+
+      <div class="d-flex justify-content-center gap-2">
+        <a th:href="@{/admin/service-types}" class="btn btn-secondary" th:text="#{action.back_to_list}">Back to List</a>
+
+        <a th:if="${serviceType.statusKey == 'active'}" th:href="@{|/admin/service-types/${serviceType.id}/edit|}" class="btn btn-primary"
+          th:text="#{action.edit}">Edit</a>
+
+        <form th:if="${serviceType.statusKey != 'deleted'}" th:action="@{|/admin/service-types/${serviceType.id}|}" method="post"
+          th:id="@{|deleteForm-${serviceType.id}|}">
+          <input type="hidden" name="_method" value="delete" />
+
+          <button type="button" class="btn btn-danger" th:data-msg="#{admin.service_type.delete_confirm}"
+            th:data-service-type-id="${serviceType.id}" onclick="confirmDelete(this)" th:text="#{action.delete}">Delete</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <div layout:fragment="scripts">
+    <script th:src="@{/js/admin/service_type/common.js}"></script>
+  </div>
+</body>
+
+</html>
