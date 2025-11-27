@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.application.edit.edit_application}">Edit Application</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="w-50 mx-auto">
+      <h2 class="mb-4 text-center" th:text="#{admin.application.edit.edit_application}">Edit Application</h2>
+
+      <form th:action="@{|/admin/applications/${app.id}/edit|}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="put" />
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="status" class="col-3 col-form-label fw-bold"
+            th:text="#{admin.application.edit.status}">Status</label>
+          <div class="col-9">
+            <div th:each="s : ${statuses}" class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" th:value="${s}" th:id="${'status-' + s}" name="status"
+                th:checked="${s} == ${app.status}">
+              <label class="form-check-label" th:for="${'status-' + s}" th:text="#{|application.status.${s}|}"></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="note" class="col-3 col-form-label fw-bold"
+            th:text="#{admin.application.edit.note}">Note</label>
+          <div class="col-9">
+            <input type="text" class="form-control" name="note" th:placeholder="#{admin.application.edit.note}">
+          </div>
+        </div>
+
+        <div class="mb-2 row align-items-center">
+          <label th:for="attachment" class="col-3 col-form-label fw-bold"
+            th:text="#{admin.application.edit.response_file}">Response File</label>
+          <div class="col-9">
+            <input type="file" class="form-control" name="attachment">
+          </div>
+        </div>
+
+        <div class="mb-4 row align-items-center">
+          <label th:for="attachment" class="col-3 col-form-label fw-bold"
+            th:text="#{admin.application.edit.staff}">Staff</label>
+          <div class="col-9">
+            <select id="staff" name="staff" class="form-select">
+              <option th:each="s : ${staffs}" th:value="${s.id}" th:text="${s.fullName}"
+                th:selected="${app.staff != null and s.id == app.staff.id}"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2">
+          <button type="submit" class="btn btn-primary" th:text="#{action.save}">Save</button>
+          <a th:href="@{/admin/applications}" class="btn btn-secondary" th:text="#{action.cancel}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div layout:fragment="scripts">
+    <script th:src="@{/js/admin/application/edit.js}"></script>
+  </div>
+</body>
+
+</html>

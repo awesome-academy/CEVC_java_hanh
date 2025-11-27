@@ -139,4 +139,16 @@ public class User extends BaseEntity {
   public boolean isEnabled() {
     return this.status == UserStatus.active && this.getDeletedAt() == null;
   }
+
+  public boolean isSuperAdmin() {
+    return this.role == Role.super_admin;
+  }
+
+  public boolean isManager() {
+    return this.role == Role.manager;
+  }
+
+  public boolean isStaff() {
+    return this.role == Role.staff;
+  }
 }

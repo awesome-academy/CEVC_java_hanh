@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.department.list.all_departments}">All Departments</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="container-fluid">
+      <h2 class="mb-4 text-center" th:text="#{admin.department.list.all_departments}">All Departments</h2>
+
+      <div class="mb-4 d-flex justify-content-end">
+        <a th:href="@{/admin/departments/add}" class="btn btn-primary" th:text="#{action.add}">Add</a>
+      </div>
+
+      <table class="mb-4 table table-hover">
+        <thead>
+          <tr>
+            <th th:text="#{department.field.id}">ID</th>
+            <th th:text="#{department.field.code}">Code</th>
+            <th th:text="#{department.field.name}">Name</th>
+            <th class="text-center" th:text="#{department.field.status}">Status</th>
+            <th colspan="3" class="text-center" th:text="#{admin.department.list.actions}">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="department : ${departments}">
+            <td th:text="${department.id}"></td>
+            <td th:text="${department.code}"></td>
+            <td th:text="${department.name}"></td>
+
+            <td class="text-center">
+              <span class="badge" th:classappend="${department.statusKey == 'deleted'} ? 'bg-danger' : 'bg-success'"
+                th:text="#{|department.status.${department.statusKey}|}"></span>
+            </td>
+            <td class="text-center">
+              <a th:href="@{|/admin/departments/${department.id}/details|}" class="text-decoration-none"
+                th:title="#{action.view_details}">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+            <td class="text-center">
+              <a th:if="${department.statusKey == 'active'}" th:href="@{|/admin/departments/${department.id}/edit|}"
+                class="text-decoration-none" th:title="#{action.edit}">
+                <i class="bi bi-pencil"></i>
+              </a>
+            </td>
+            <td class="text-center">
+              <form th:if="${department.statusKey != 'deleted'}" th:action="@{|/admin/departments/${department.id}|}"
+                method="post" th:id="@{|deleteForm-${department.id}|}">
+                <input type="hidden" name="_method" value="delete" />
+
+                <button type="button" class="btn btn-link p-0" th:title="#{action.delete}"
+                  th:data-msg="#{admin.department.delete_confirm}" onclick="confirmDelete(this)"
+                  th:data-department-id="${department.id}">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <nav th:if="${totalPages > 1}">
+        <ul class="pagination">
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+            <a class="page-link" th:href="@{/admin/departments(page=${currentPage - 1})}"
+              th:text="#{pagination.previous}">Previous</a>
+          </li>
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+            th:classappend="${i == currentPage} ? 'active' : ''">
+            <a class="page-link" th:href="@{/admin/departments(page=${i})}" th:text="${i + 1}"></a>
+          </li>
+          <li class="page-item" th:classappend="${currentPage == totalPages -1} ? 'disabled' : ''">
+            <a class="page-link" th:href="@{/admin/departments(page=${currentPage + 1})}"
+              th:text="#{pagination.next}">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </main>
+
+  <div layout:fragment="scripts">
+    <script th:src="@{/js/admin/department/common.js}"></script>
+  </div>
+</body>
+
+</html>

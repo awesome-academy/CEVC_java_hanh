@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{/admin/layout}">
+
+<head>
+  <title th:text="#{admin.service_type.list.all_service_types}">All Service Types</title>
+</head>
+
+<body>
+  <main layout:fragment="content">
+    <div class="container-fluid">
+      <h2 class="mb-4 text-center" th:text="#{admin.service_type.list.all_service_types}">All Service Types</h2>
+
+      <div class="mb-4 d-flex justify-content-between align-items-center">
+        <form method="get" class="d-flex gap-2 mb-0">
+          <input type="text" name="search" class="form-control" th:placeholder="#{service_type.field.name}"
+            th:value="${search}" />
+
+          <select name="department" class="form-select">
+            <option value="" th:text="#{admin.service_type.list.all_department}" th:selected="${department == null}">All
+              Department</option>
+            <option th:each="d : ${departments}" th:value="${d.id}" th:text="${d.name}"
+              th:selected="${d.id == department?.id}">
+            </option>
+          </select>
+
+          <select name="category" class="form-select">
+            <option value="" th:text="#{admin.service_type.list.all_category}" th:selected="${category == null}">All
+              Category</option>
+            <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+              th:selected="${c.id == category?.id}">
+            </option>
+          </select>
+
+          <button type="submit" class="btn btn-primary" th:text="#{admin.service_type.list.filter}">Filter</button>
+        </form>
+
+        <a th:href="@{/admin/service-types/add}" class="btn btn-primary" th:text="#{action.add}">Add</a>
+      </div>
+
+      <table class="mb-4 table table-hover">
+        <thead>
+          <tr>
+            <th th:text="#{service_type.field.id}">ID</th>
+            <th th:text="#{service_type.field.code}">Code</th>
+            <th th:text="#{service_type.field.name}">Name</th>
+            <th th:text="#{service_type.field.department}">Department</th>
+            <th th:text="#{service_type.field.category}">Category</th>
+            <th class="text-center" th:text="#{service_type.field.status}">Status</th>
+            <th colspan="3" class="text-center" th:text="#{admin.service_type.list.actions}">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="st : ${serviceTypes}">
+            <td th:text="${st.id}"></td>
+            <td th:text="${st.code}"></td>
+            <td th:text="${st.name}"></td>
+            <td th:text="${st.department.name}"></td>
+            <td th:text="${st.category.name}"></td>
+
+            <td class="text-center">
+              <span class="badge" th:classappend="${st.statusKey == 'deleted'} ? 'bg-danger' : 'bg-success'"
+                th:text="#{|service_type.status.${st.statusKey}|}"></span>
+            </td>
+
+            <td class="text-center">
+              <a th:href="@{|/admin/service-types/${st.id}/details|}" class="text-decoration-none"
+                th:title="#{action.view_details}">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+
+            <td class="text-center">
+              <a th:if="${st.statusKey == 'active'}" th:href="@{|/admin/service-types/${st.id}/edit|}"
+                class="text-decoration-none" th:title="#{action.edit}">
+                <i class="bi bi-pencil"></i>
+              </a>
+            </td>
+
+            <td class="text-center">
+              <form th:if="${st.statusKey != 'deleted'}" th:action="@{|/admin/service-types/${st.id}|}" method="post"
+                th:id="@{|deleteForm-${st.id}|}">
+                <input type="hidden" name="_method" value="delete" />
+
+                <button type="button" class="btn btn-link p-0" th:title="#{action.delete}"
+                  th:data-msg="#{admin.service_type.delete_confirm}" onclick="confirmDelete(this)"
+                  th:data-service-type-id="${st.id}">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <nav th:if="${totalPages > 1}">
+        <ul class="pagination">
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
+            <a class="page-link"
+              th:href="@{/admin/service-types(page=${currentPage - 1}, search=${search}, department=${department?.id}, category=${category?.id})}"
+              th:text="#{pagination.previous}">Previous</a>
+          </li>
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+            th:classappend="${i == currentPage} ? 'active' : ''">
+            <a class="page-link"
+              th:href="@{/admin/service-types(page=${i}, search=${search}, department=${department?.id}, category=${category?.id})}"
+              th:text="${i + 1}"></a>
+          </li>
+          <li class="page-item" th:classappend="${currentPage == totalPages -1} ? 'disabled' : ''">
+            <a class="page-link"
+              th:href="@{/admin/service-types(page=${currentPage + 1}, search=${search}, department=${department?.id}, category=${category?.id})}"
+              th:text="#{pagination.next}">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </main>
+
+  <div layout:fragment="scripts">
+    <script th:src="@{/js/admin/service_type/common.js}"></script>
+  </div>
+</body>
+
+</html>
